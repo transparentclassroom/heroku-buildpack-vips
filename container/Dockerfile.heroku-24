@@ -3,6 +3,8 @@ FROM heroku/heroku:$STACK_VERSION
 
 ENV DEBIAN_FRONTEND noninteractive
 
+USER root
+
 RUN apt-get update \
   && apt-get install -y \
     build-essential \
@@ -10,16 +12,16 @@ RUN apt-get update \
     wget \
     python3-pip \
     ninja-build \
-    pkg-config 
+    pkg-config
 
-RUN pip3 install meson
+RUN pip3 install meson --break-system-packages
 
 # use the heroku platform libraries when we can
 #
 # see https://devcenter.heroku.com/articles/stack-packages
 #
 # libgsf needs libxml2
-# 
+#
 # this should only pull in header files and should not create any extra run
 # time dependencies
 RUN apt-get install -y \
@@ -44,10 +46,12 @@ RUN apt-get install -y \
   libcgif-dev \
   libheif-dev
 
+USER 1001
+
 WORKDIR /usr/local/src
 
-# build to this prefix 
-#  - heroku has /usr/local/lib on the default ld.so.conf search path, so 
+# build to this prefix
+#  - heroku has /usr/local/lib on the default ld.so.conf search path, so
 #    this is convenient
 #  - heroku has a basic dir structure in /usr/local, but no files
 ARG PREFIX=/usr/local
@@ -56,6 +60,8 @@ ENV PKG_CONFIG_PATH=$PREFIX/lib/pkgconfig
 # use libspng for PNG load and save
 ARG SPNG_VERSION=0.7.2
 ARG SPNG_URL=https://github.com/randy408/libspng/archive/refs/tags
+
+USER root
 
 RUN wget ${SPNG_URL}/v${SPNG_VERSION}.tar.gz \
   && tar xf v${SPNG_VERSION}.tar.gz \
@@ -112,8 +118,11 @@ RUN cd $PREFIX \
   && vips --vips-config >> "build/heroku-$STACK_VERSION.config.log"
 
 # install and test ruby-vips to confirm we can pick up the libraries
-# correctly 
+# correctly
 # we need ruby-dev to install ruby-ffi
+
 RUN apt-get install -y ruby-dev
+
+RUN gem install ffi -v 1.17.1
 RUN gem install ruby-vips
 RUN ruby -e 'require "vips"; puts "ruby-vips: libvips #{Vips::LIBRARY_VERSION}"'
