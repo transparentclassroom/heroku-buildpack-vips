@@ -16,7 +16,7 @@ Here is the "before" list of an application's `$PATH`:
 - `/app/vendor/bundle/bin`
 - `/app/vendor/bundle/ruby/3.2.0/bin`
 - `/app/vendor/ruby-3.2.2/bin`
-- `/tmp/codon/tmp/buildpacks/50d5eddf222a9b7326028041d4e6509f915ccf2c/vendor/ruby/heroku-22/bin/`
+- `/tmp/codon/tmp/buildpacks/50d5eddf222a9b7326028041d4e6509f915ccf2c/vendor/ruby/heroku-24/bin/`
 - `/usr/local/bin`
 - `/usr/bin`
 - `/bin`
