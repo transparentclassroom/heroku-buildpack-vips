@@ -1,7 +1,7 @@
-ARG STACK_VERSION
+ARG STACK_VERSION=24
 FROM heroku/heroku:$STACK_VERSION
 
-ENV DEBIAN_FRONTEND noninteractive
+ENV DEBIAN_FRONTEND=noninteractive
 
 USER root
 
@@ -88,7 +88,7 @@ RUN wget ${VIPS_URL}/v${VIPS_VERSION}/v${VIPS_VERSION}.tar.gz \
     # modules cause issues with loading heif files in ruby-vips \
 	  -Dmodules=disabled \
     # allows omitting gobject-introspection library \
-	  -Dintrospection=false \
+	  -Dintrospection=disabled \
 	&& cd build \
 	&& meson compile \
 	&& meson install
