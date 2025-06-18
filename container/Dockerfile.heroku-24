@@ -12,6 +12,7 @@ RUN apt-get update \
     wget \
     python3-pip \
     ninja-build \
+    cmake \
     pkg-config
 
 RUN pip3 install meson --break-system-packages
@@ -62,6 +63,14 @@ ARG SPNG_VERSION=0.7.2
 ARG SPNG_URL=https://github.com/randy408/libspng/archive/refs/tags
 
 USER root
+
+RUN wget https://github.com/strukturag/libheif/archive/refs/tags/v1.19.8.tar.gz \
+  && tar xf v1.19.8.tar.gz \
+  && cd libheif-1.19.8 \
+  && mkdir build \
+  && cmake --preset=release \
+  && make \
+  && make install
 
 RUN wget ${SPNG_URL}/v${SPNG_VERSION}.tar.gz \
   && tar xf v${SPNG_VERSION}.tar.gz \
