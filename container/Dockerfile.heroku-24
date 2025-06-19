@@ -70,9 +70,7 @@ RUN wget http://archive.ubuntu.com/ubuntu/pool/main/libw/libwebp/libsharpyuv0_1.
     && wget http://archive.ubuntu.com/ubuntu/pool/main/libh/libheif/libheif-plugin-aomdec_1.19.7-1_amd64.deb \
     && wget http://archive.ubuntu.com/ubuntu/pool/main/libh/libheif/libheif-plugin-libde265_1.19.7-1_amd64.deb \
     && wget http://archive.ubuntu.com/ubuntu/pool/universe/libh/libheif/libheif-dev_1.19.7-1_amd64.deb \
-    && dpkg -i libheif1_1.19.7-1_amd64.deb libheif-plugin-aomdec_1.19.7-1_amd64.deb libheif-plugin-dav1d_1.19.7-1_amd64.deb libheif-plugin-libde265_1.19.7-1_amd64.deb libheif-dev_1.19.7-1_amd64.deb \
-    && wget http://archive.ubuntu.com/ubuntu/pool/main/o/orc/liborc-0.4-0t64_0.4.41-1_amd64.deb \
-    && dpkg -i liborc-0.4-0t64_0.4.41-1_amd64.deb
+    && dpkg -i libheif1_1.19.7-1_amd64.deb libheif-plugin-aomdec_1.19.7-1_amd64.deb libheif-plugin-dav1d_1.19.7-1_amd64.deb libheif-plugin-libde265_1.19.7-1_amd64.deb libheif-dev_1.19.7-1_amd64.deb
     # && wget http://archive.ubuntu.com/ubuntu/pool/universe/libm/libmatio/libmatio13_1.5.28-1build1_amd64.deb \
     # && wget http://archive.ubuntu.com/ubuntu/pool/universe/h/hdf5/libhdf5-310_1.14.5+repack-3_amd64.deb \
     # && wget http://archive.ubuntu.com/ubuntu/pool/main/g/glib2.0/libglib2.0-0t64_2.84.1-1_amd64.deb \
