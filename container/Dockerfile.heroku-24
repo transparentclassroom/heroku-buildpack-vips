@@ -44,7 +44,9 @@ RUN apt-get install -y \
   libimagequant-dev \
   liborc-0.4-dev \
   libgsf-1-dev \
-  libcgif-dev
+  libcgif-dev \
+  imagemagick \
+  libmagickwand-dev
 
 USER 1001
 
@@ -63,23 +65,21 @@ ARG SPNG_URL=https://github.com/randy408/libspng/archive/refs/tags
 
 USER root
 
+# Download libraries so libvips installs with libheif support
 RUN wget http://archive.ubuntu.com/ubuntu/pool/main/libw/libwebp/libsharpyuv0_1.5.0-0.1_amd64.deb \
-    && dpkg -i libsharpyuv0_1.5.0-0.1_amd64.deb \
     && wget http://archive.ubuntu.com/ubuntu/pool/main/libh/libheif/libheif1_1.19.7-1_amd64.deb \
     && wget http://archive.ubuntu.com/ubuntu/pool/universe/libh/libheif/libheif-plugin-dav1d_1.19.7-1_amd64.deb \
     && wget http://archive.ubuntu.com/ubuntu/pool/main/libh/libheif/libheif-plugin-aomdec_1.19.7-1_amd64.deb \
     && wget http://archive.ubuntu.com/ubuntu/pool/main/libh/libheif/libheif-plugin-libde265_1.19.7-1_amd64.deb \
     && wget http://archive.ubuntu.com/ubuntu/pool/universe/libh/libheif/libheif-dev_1.19.7-1_amd64.deb \
-    && dpkg -i libheif1_1.19.7-1_amd64.deb libheif-plugin-aomdec_1.19.7-1_amd64.deb libheif-plugin-dav1d_1.19.7-1_amd64.deb libheif-plugin-libde265_1.19.7-1_amd64.deb libheif-dev_1.19.7-1_amd64.deb
-    # && wget http://archive.ubuntu.com/ubuntu/pool/universe/libm/libmatio/libmatio13_1.5.28-1build1_amd64.deb \
-    # && wget http://archive.ubuntu.com/ubuntu/pool/universe/h/hdf5/libhdf5-310_1.14.5+repack-3_amd64.deb \
-    # && wget http://archive.ubuntu.com/ubuntu/pool/main/g/glib2.0/libglib2.0-0t64_2.84.1-1_amd64.deb \
-    # && wget http://archive.ubuntu.com/ubuntu/pool/main/g/glib2.0/libglib2.0-dev_2.84.1-1_amd64.deb \
-    # && wget http://archive.ubuntu.com/ubuntu/pool/main/u/util-linux/libmount1_2.40.2-14ubuntu1_amd64.deb \
-    # && wget http://archive.ubuntu.com/ubuntu/pool/main/u/util-linux/libblkid1_2.40.2-14ubuntu1_amd64.deb \
-    # && wget http://archive.ubuntu.com/ubuntu/pool/universe/v/vips/libvips42t64_8.16.0-2build1_amd64.deb \
+    && dpkg -i libheif1_1.19.7-1_amd64.deb libheif-plugin-aomdec_1.19.7-1_amd64.deb libheif-plugin-dav1d_1.19.7-1_amd64.deb libheif-plugin-libde265_1.19.7-1_amd64.deb libheif-dev_1.19.7-1_amd64.deb libsharpyuv0_1.5.0-0.1_amd64.deb
+
+# Uncomment these if you want to be able to use the vips/heif cli tools
+# from the docker container
+# RUN wget http://archive.ubuntu.com/ubuntu/pool/universe/v/vips/libvips42t64_8.16.0-2build1_amd64.deb \
     # && wget http://archive.ubuntu.com/ubuntu/pool/universe/v/vips/libvips-tools_8.16.0-2build1_amd64.deb \
-    # && wget http://archive.ubuntu.com/ubuntu/pool/main/libh/libheif/libheif-examples_1.19.7-1_amd64.deb
+    # && wget http://archive.ubuntu.com/ubuntu/pool/main/libh/libheif/libheif-examples_1.19.7-1_amd64.deb \
+    # && dpkg -i libheif-examples_1.19.7-1_amd64.deb libvips-tools_8.16.0-2build1_amd64.deb
 
 
 RUN wget ${SPNG_URL}/v${SPNG_VERSION}.tar.gz \
@@ -105,6 +105,7 @@ RUN wget ${VIPS_URL}/v${VIPS_VERSION}/v${VIPS_VERSION}.tar.gz \
     # obscure file format that nobody will use \
 	  -Danalyze=false \
     -Dheif=enabled \
+    -Dmagick=enabled \
     # modules cause issues with loading heif files in ruby-vips \
 	  -Dmodules=disabled \
     # allows omitting gobject-introspection library \

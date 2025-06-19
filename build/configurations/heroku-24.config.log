@@ -34,4 +34,4 @@ Matlab load with Matio: false
 NIfTI load/save with libnifti: false
 FITS load/save with cfitsio: false
 GIF save with cgif: true
-Magick load/save with MagickCore: false (dynamic module: false)
+Magick load/save with MagickCore: true (dynamic module: false)
