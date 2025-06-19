@@ -26,7 +26,7 @@ RUN pip3 install meson --break-system-packages
 # this should only pull in header files and should not create any extra run
 # time dependencies
 RUN apt-get install -y \
-  glib-2.0-dev \
+  libatomic1 \
   libexpat1-dev \
   libpango1.0-dev \
   librsvg2-dev \
@@ -44,8 +44,7 @@ RUN apt-get install -y \
   libimagequant-dev \
   liborc-0.4-dev \
   libgsf-1-dev \
-  libcgif-dev \
-  libheif-dev
+  libcgif-dev
 
 USER 1001
 
@@ -59,18 +58,29 @@ ARG PREFIX=/usr/local
 ENV PKG_CONFIG_PATH=$PREFIX/lib/pkgconfig
 
 # use libspng for PNG load and save
-ARG SPNG_VERSION=0.7.2
+ARG SPNG_VERSION=0.7.4
 ARG SPNG_URL=https://github.com/randy408/libspng/archive/refs/tags
 
 USER root
 
-RUN wget https://github.com/strukturag/libheif/archive/refs/tags/v1.19.8.tar.gz \
-  && tar xf v1.19.8.tar.gz \
-  && cd libheif-1.19.8 \
-  && mkdir build \
-  && cmake --preset=release \
-  && make \
-  && make install
+RUN wget http://archive.ubuntu.com/ubuntu/pool/main/libw/libwebp/libsharpyuv0_1.5.0-0.1_amd64.deb \
+    && dpkg -i libsharpyuv0_1.5.0-0.1_amd64.deb \
+    && wget http://archive.ubuntu.com/ubuntu/pool/main/libh/libheif/libheif1_1.19.7-1_amd64.deb \
+    && wget http://archive.ubuntu.com/ubuntu/pool/universe/libh/libheif/libheif-plugin-dav1d_1.19.7-1_amd64.deb \
+    && wget http://archive.ubuntu.com/ubuntu/pool/main/libh/libheif/libheif-plugin-aomdec_1.19.7-1_amd64.deb \
+    && wget http://archive.ubuntu.com/ubuntu/pool/main/libh/libheif/libheif-plugin-libde265_1.19.7-1_amd64.deb \
+    && wget http://archive.ubuntu.com/ubuntu/pool/universe/libh/libheif/libheif-dev_1.19.7-1_amd64.deb \
+    && dpkg -i libheif1_1.19.7-1_amd64.deb libheif-plugin-aomdec_1.19.7-1_amd64.deb libheif-plugin-dav1d_1.19.7-1_amd64.deb libheif-plugin-libde265_1.19.7-1_amd64.deb libheif-dev_1.19.7-1_amd64.deb
+    # && wget http://archive.ubuntu.com/ubuntu/pool/universe/libm/libmatio/libmatio13_1.5.28-1build1_amd64.deb \
+    # && wget http://archive.ubuntu.com/ubuntu/pool/universe/h/hdf5/libhdf5-310_1.14.5+repack-3_amd64.deb \
+    # && wget http://archive.ubuntu.com/ubuntu/pool/main/g/glib2.0/libglib2.0-0t64_2.84.1-1_amd64.deb \
+    # && wget http://archive.ubuntu.com/ubuntu/pool/main/g/glib2.0/libglib2.0-dev_2.84.1-1_amd64.deb \
+    # && wget http://archive.ubuntu.com/ubuntu/pool/main/u/util-linux/libmount1_2.40.2-14ubuntu1_amd64.deb \
+    # && wget http://archive.ubuntu.com/ubuntu/pool/main/u/util-linux/libblkid1_2.40.2-14ubuntu1_amd64.deb \
+    # && wget http://archive.ubuntu.com/ubuntu/pool/universe/v/vips/libvips42t64_8.16.0-2build1_amd64.deb \
+    # && wget http://archive.ubuntu.com/ubuntu/pool/universe/v/vips/libvips-tools_8.16.0-2build1_amd64.deb \
+    # && wget http://archive.ubuntu.com/ubuntu/pool/main/libh/libheif/libheif-examples_1.19.7-1_amd64.deb
+
 
 RUN wget ${SPNG_URL}/v${SPNG_VERSION}.tar.gz \
   && tar xf v${SPNG_VERSION}.tar.gz \
@@ -80,7 +90,7 @@ RUN wget ${SPNG_URL}/v${SPNG_VERSION}.tar.gz \
   && ninja \
   && ninja install
 
-ARG VIPS_VERSION=8.14.3
+ARG VIPS_VERSION=8.17.0
 ARG VIPS_URL=https://github.com/libvips/libvips/archive/refs/tags
 
 RUN wget ${VIPS_URL}/v${VIPS_VERSION}/v${VIPS_VERSION}.tar.gz \
@@ -94,6 +104,7 @@ RUN wget ${VIPS_URL}/v${VIPS_VERSION}/v${VIPS_VERSION}.tar.gz \
 	  -Dradiance=false \
     # obscure file format that nobody will use \
 	  -Danalyze=false \
+    -Dheif=enabled \
     # modules cause issues with loading heif files in ruby-vips \
 	  -Dmodules=disabled \
     # allows omitting gobject-introspection library \
