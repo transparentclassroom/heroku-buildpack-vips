@@ -136,13 +136,3 @@ RUN cd $PREFIX \
   && echo "" >> "build/heroku-$STACK_VERSION.config.log" \
   && echo "$ vips --vips-config" >> "build/heroku-$STACK_VERSION.config.log" \
   && vips --vips-config >> "build/heroku-$STACK_VERSION.config.log"
-
-# install and test ruby-vips to confirm we can pick up the libraries
-# correctly
-# we need ruby-dev to install ruby-ffi
-
-RUN apt-get install -y ruby-dev
-
-RUN gem install ffi -v 1.17.1
-RUN gem install ruby-vips
-RUN ruby -e 'require "vips"; puts "ruby-vips: libvips #{Vips::LIBRARY_VERSION}"'
